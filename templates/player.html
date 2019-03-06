@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ n_name }}'s Player Page</title>
+</head>
+<body>
+    <h1> {{ n_name }} </h1>
+    {% if team is none %}
+        <p> They have not been selected for a Team</p>
+    {% else %}
+        <p> They have been selected the <a href="/teamsheet/{{ team + 1}}">{{ team + 1}} XV</a></p>
+    {%  endif %}
+    <p>There availability is {{ availability }}</p>
+    <form action="/player/{{ name }}" method="POST">
+        <input type="submit" value="Set availability to {{ not_availability}}">
+    </form>
+    <table id="ratings">
+      <tr> <th class="position">Positions</th> <th class="rating">Ratings</th> <th class="edit"></th> </tr>
+      {% for i in range(ratings|length) %}
+        <tr> <td class="numbers">{{ positions[i] }}</td> <td class="positions">{{ ratings[i] }}</td> <td> Edit </td> </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
