@@ -63,9 +63,9 @@ class Player:
 
     @name.setter
     def name(self, value):
-        # Validates if a players name populated is less then 30 characters
-        if len(value) > 30:
-            raise ValueError("The name entered must be less than 30 characters: "+str(value)+" is too long")
+        # Validates if a players name populated is less then 40 characters
+        if len(value) > 40:
+            raise ValueError("The name entered must be less than 40 characters: "+str(value)+" is too long")
         else:
             self._name = value
 

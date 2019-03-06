@@ -1,23 +1,49 @@
+/* General */
+* {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  font-family: "Source Sans Pro", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 table#team {
   font-size: 12px;
   letter-spacing: 0.5px;
   background-color: #fff;
   margin: 0 auto;
+  text-transform: uppercase;
+  background-color: #fff;
   border-collapse: collapse;
+  border-radius: 8px;
+  border-style: hidden; /* hide standard table (collapsed) border */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  color: #222;
 }
 
-table#team .numbers{
+table#team td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px 16px;
+}
+
+table#team th.positions {
+    width: 186px;
+}
+
+table#team th.players {
+    width: 265px
+}
+
+table#team tr:nth-child(1) {
+  font-weight: bold;
+  color: #1A3550 !important;
+}
+
+table#team td.numbers, th.numbers {
     text-align: center;
-    width: 24px;
-}
-
-table#team .positions{
-    width: 169px;
-    padding-left: 5px;
-}
- table#team .players{
-     width: 194px;
-     padding-left: 5px;
+    font-weight: bold;
 }
 
 div.change_team {
@@ -28,16 +54,15 @@ div.change_team {
     user-select: none; /* Standard syntax */
 }
 
-div.change_team a{
+a.players {
+    color: #1A3550;
+}
+
+div.change_team a {
     text-decoration: none;
 }
+
 div.whitespace {
      display: inline-block;
      width: 16px;
-}
-
-table#team td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 5px 0;
 }
