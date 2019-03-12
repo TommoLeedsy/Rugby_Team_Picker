@@ -85,12 +85,12 @@ def add_header(response):
 
 
 u18 = backend.Squad("u18")
+# u18.import_players('BC_players.csv')
 u18.import_players('players.csv')
-u18.add_sub(1, 10)
-u18.add_sub(1, 3)
-u18.add_sub(1, 6)
+# u18.add_sub(1, 10)
+# u18.add_sub(1, 3)
+# u18.add_sub(1, 6)
 u18.build_teams(None)
-u18.set_player_availability("Alexander_Macaulay", False)
 print(u18.players_not_playing())
 print(u18.players_not_available())
 
