@@ -5,9 +5,15 @@
     <link href="{{ url_for('static', filename='stylesheets/global.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ url_for('static', filename='stylesheets/index.css') }}" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
-    <title>Title</title>
+    <title>The {{ school }} Rugby Club Team Picker</title>
 </head>
 <body>
-    <h1>Hello World</h1>
+  <h1>The {{ school }} Rugby Club</h1>
+  {% for i in range(all_teams|length) %}
+    <h3>{{ all_teams[i][0] }} Rugby Teams</h3>
+    {% for j in range(all_teams[i][1]|length) %}
+      <h4><a class="players" href="/teamsheet/{{ i + 1 }}/{{ j + 1 }}">{{ all_teams[i][1][j] }}</a></h4>
+      {% endfor %}
+    {% endfor %}
 </body>
 </html>
