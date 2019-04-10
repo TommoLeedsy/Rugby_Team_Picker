@@ -12,7 +12,7 @@
     {% if team is none %}
         <p> They have not been selected for a Team</p>
     {% else %}
-        <p> They have been selected the <a href="/teamsheet/{{ team + 1}}">{{ team + 1}} XV</a></p>
+        <p> They have been selected the <a href="/teamsheet/{{ age_group + 1 }}/{{ team + 1}}">{{ team_name}}</a></p>
     {%  endif %}
     <p>There availability is {{ availability }}</p>
     <form action="/player/{{ name }}" method="POST">
