@@ -1,9 +1,9 @@
-def main(players):
+def main(name, players):
     import names
     import random
     import csv
 
-    with open('players.csv', 'w', newline='') as csv_file:
+    with open(name, 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         positions = [[[1, 3], [2], [4, 5], [6, 7], [8]], [[9], [10], [11, 14], [12], [13], [15]]]
         for _ in range(players):
@@ -20,4 +20,4 @@ def main(players):
 
 
 if __name__ == '__main__':
-    main(100)
+    main('players.csv', 100)
