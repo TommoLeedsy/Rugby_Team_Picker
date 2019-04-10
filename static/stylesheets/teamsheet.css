@@ -6,14 +6,12 @@ table#team {
   text-transform: uppercase;
   background-color: #fff;
   border-collapse: collapse;
-  border-radius: 8px;
-  border-style: hidden; /* hide standard table (collapsed) border */
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   color: #222;
 }
 
 table#team td, th {
-  border: 1px solid #dddddd;
+  border: 1px solid #BBB;
   text-align: left;
   padding: 8px 16px;
 }
@@ -28,7 +26,6 @@ table#team th.players {
 
 table#team tr:nth-child(1) {
   font-weight: bold;
-  color: #1A3550 !important;
 }
 
 table#team td.numbers, th.numbers {
@@ -45,7 +42,7 @@ div.change_team {
 }
 
 a.players {
-    color: #1A3550;
+    color: #000;
 }
 
 div.change_team a {
