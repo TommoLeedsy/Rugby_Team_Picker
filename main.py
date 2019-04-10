@@ -71,9 +71,11 @@ class Player:
 
 
 class Squad:
-    def __init__(self, age_group):
+    def __init__(self, age_group, ordinal):
         #  Stores the Age Group
-        self._age_group = age_group
+        self.age_group = age_group
+        # Stores the age group
+        self.ordinal = ordinal
         # Stores an array of player objects
         self.players = []
         # Stores all the teams
@@ -396,3 +398,22 @@ class Squad:
             raise ValueError("The age group entered must be less than 30 characters: "+str(value)+" is too long")
         else:
             self._age_group = value
+
+
+class School:
+    def __init__(self, name):
+        self.name = name
+        self.squads = []
+
+    def add_squad(self, age_group, ordinal, csv):
+        index = len(self.squads)
+        # Appends the
+        self.squads.append(Squad(age_group, ordinal))
+        if csv is not None:
+            self.squads[index].import_players(csv)
+
+    def find_player_age_group(self, name):
+        for index in range(len(self.squads)):
+            if self.squads[index].find_player(name) is not None:
+                return index
+        return None
