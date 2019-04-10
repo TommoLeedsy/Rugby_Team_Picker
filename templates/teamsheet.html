@@ -2,12 +2,13 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link href="{{ url_for('static', filename='stylesheets/global.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ url_for('static', filename='stylesheets/teamsheet.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='stylesheets/global.css') }}" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
-    <title>{{ team }} XV Teamsheet</title>
+    <title>{{ team_name }} Teamsheet</title>
   </head>
   <body>
+    <h1>{{ team_name }} Teamsheet</h1>
     <table id="team">
       <tr> <th class="numbers">#</th> <th class="positions">Position</th> <th class="players">Name</th> </tr>
       {% for i in range(players|length) %}
@@ -16,12 +17,12 @@
     </table>
     <div class="change_team">
       {% if team_above is not none %}
-        <a href="/teamsheet/{{team_above}}" >&#8592;</a>
+        <a href="/teamsheet/{{ age_group }}/{{team_above}}" >&#8592;</a>
       {% else %}
         <div class="whitespace"></div>
       {% endif %}
       {% if team_below is not none %}
-        <a href="/teamsheet/{{team_below}}">&#8594;</a>
+        <a href="/teamsheet/{{ age_group }}/{{team_below}}">&#8594;</a>
       {% else %}
         <div class="whitespace"></div>
       {% endif %}
