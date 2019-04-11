@@ -9,21 +9,24 @@ class Player:
     def add_rating(self, rating, position):
         # Validates if the rating is between 1 and 10
         if 0 < rating > 10:
-            raise ValueError("The rating entered must be between 1 and 10: " + str(rating) + " is out of range")
+            # raise ValueError("The rating entered must be between 1 and 10: " + str(rating) + " is out of range")
+            print("The rating entered must be between 1 and 10: " + str(rating) + " is out of range")
         # Validates if the rating is between 1 and 10
         elif 0 < position > 15:
-            raise ValueError("The position entered must be between 1 and 15: " + str(position) + " is out of range")
+            # raise ValueError("The position entered must be between 1 and 15: " + str(position) + " is out of range")
+            print("The position entered must be between 1 and 15: " + str(position) + " is out of range")
         # If nothing is in the list then the tuple is appended to it to start the list
         elif len(self.ratings) == 0:
             self.ratings.append((rating, position))
         # Checks if a rating in this position already exist if it does then it updates the rating
-        elif self.position_exists(position):
+        elif self.position_exists(position) is True:
             # Checks if the position exists and if it does then the rating is updates
             self.update_rating(rating, position)
         else:
             # Goes though all the other ratings the player has
             for index in range(len(self.ratings)):
-                # Find a rating that is less than the one we are trying to add the new position goes between this one and the previous one
+                # Find a rating that is less than the one we are trying to add the new position goes between this one
+                # and the previous one
                 if rating > self.ratings[index][0]:
                     # Inserts the tuple into the list at the point specified by index
                     self.ratings.insert(index, (rating, position))
@@ -40,22 +43,20 @@ class Player:
         return False
 
     def delete_rating(self, position):
-        i = 0
         # Finds the index of the position in the player's rating array
-        while self.ratings[i][1] != position:
-            i += 1
-        # Deletes the tuple at the index found
-        self.ratings.remove((self.ratings[i][0], position))
+        for index in range(len(self.ratings)):
+            if self.ratings[index][1] == position:
+                # Deletes the tuple at the index found
+                self.ratings.remove((self.ratings[index][0], position))
+                return True
+        # raise ValueError("ERROR: The position entered must be in the list: " + str(position) + " is not in the list")
+        print("ERROR: The position entered must be in the list: " + str(position) + " is not in the list")
 
     def update_rating(self, rating, position):
         # Finds the position in the player's rating array and then deletes it
-        self.delete_rating(position)
-        # Adds a new rating to the player's ratings
-        self.add_rating(rating, position)
-
-    def sort(self):
-        # Reverse sorts the player's ratings
-        self.ratings.sort(reverse=True)
+        if self.delete_rating(position) is True:
+            # Adds a new rating to the player's ratings
+            self.add_rating(rating, position)
 
     @property
     def name(self):
