@@ -490,3 +490,15 @@ class School:
             if self.squads[index].find_player(name) is not None:
                 return index
         return None
+
+    @property
+    def name(self):
+        return self._age_group
+
+    @name.setter
+    def name(self, value):
+        # Validates if the name's length is less than 30 characters
+        if len(value) > 30:
+            raise ValueError("The school name entered must be less than 30 characters: " + str(value) + " is too long")
+        else:
+            self._age_group = value
