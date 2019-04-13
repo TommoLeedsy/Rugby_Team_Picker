@@ -273,7 +273,7 @@ class Squad:
         # Checks if team is None
         if team is not None:
             # Sets the index to the value of team - 1
-            index = team - 1
+            index = int(team) - 1
             # Sets the team at a specific index to a blank list
             self.teams[index] = []
         else:
@@ -468,18 +468,25 @@ class Squad:
 
 class School:
     def __init__(self, name):
+        # Stores the name of the School
         self.name = name
+        # Stores a list of Squads
         self.squads = []
 
     def add_squad(self, age_group, ordinal, csv):
+        # Sets the index of the new squad to the current number of squads
         index = len(self.squads)
-        # Appends the
+        # Appends the new squad to the list of squads
         self.squads.append(Squad(age_group, ordinal))
+        # Checks id csv is not None
         if csv is not None:
+            # It then runs the function import_players to import the players into the new squad
             self.squads[index].import_players(csv)
 
     def find_player_age_group(self, name):
+        # Iterates through all the squads
         for index in range(len(self.squads)):
+            # Checks if the payer is in the squad
             if self.squads[index].find_player(name) is not None:
                 return index
         return None
