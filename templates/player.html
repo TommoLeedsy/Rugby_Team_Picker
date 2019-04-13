@@ -18,10 +18,11 @@
     <form action="/player/{{ name }}" method="POST">
         <input type="submit" value="Set availability to {{ not_availability}}">
     </form>
+    <br>
     <table id="ratings">
       <tr> <th class="position">Positions</th> <th class="rating">Ratings</th> <th class="edit"></th> </tr>
       {% for i in range(ratings|length) %}
-        <tr> <td class="numbers">{{ positions[i] }}</td> <td class="positions">{{ ratings[i] }}</td> <td> Edit </td> </tr>
+        <tr> <td class="position">{{ positions[i] }}</td> <td class="rating">{{ ratings[i] }}</td> <td class="edit"> Edit </td> </tr>
         {% endfor %}
     </table>
 </body>
