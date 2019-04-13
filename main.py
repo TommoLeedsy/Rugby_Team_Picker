@@ -60,7 +60,7 @@ class Player:
 
     @property
     def name(self):
-        return self._name
+        return self.name
 
     @name.setter
     def name(self, value):
@@ -68,7 +68,7 @@ class Player:
         if len(value) > 40:
             raise ValueError("The name entered must be less than 40 characters: "+str(value)+" is too long")
         else:
-            self._name = value
+            self.name = value
 
 
 class Squad:
@@ -443,7 +443,7 @@ class Squad:
 
     @property
     def age_group(self):
-        return self._age_group
+        return self.age_group
 
     @age_group.setter
     def age_group(self, value):
@@ -451,11 +451,11 @@ class Squad:
         if len(value) > 30:
             raise ValueError("The age group entered must be less than 30 characters: "+str(value)+" is too long")
         else:
-            self._age_group = value
+            self.age_group = value
 
     @property
     def ordinal(self):
-        return self._ordinal
+        return self.ordinal
 
     @ordinal.setter
     def ordinal(self, value):
@@ -463,7 +463,7 @@ class Squad:
         if value is not True and value is not False:
             raise ValueError("The argument for ordinal entered must be a boolean")
         else:
-            self._ordinal = value
+            self.ordinal = value
 
 
 class School:
@@ -493,7 +493,7 @@ class School:
 
     @property
     def name(self):
-        return self._age_group
+        return self.name
 
     @name.setter
     def name(self, value):
@@ -501,4 +501,4 @@ class School:
         if len(value) > 30:
             raise ValueError("The school name entered must be less than 30 characters: " + str(value) + " is too long")
         else:
-            self._age_group = value
+            self.name = value
