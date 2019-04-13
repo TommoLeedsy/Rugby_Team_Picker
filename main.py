@@ -35,7 +35,7 @@ class Player:
             self.ratings.append((rating, position))
 
     def position_exists(self, position):
-        # Checks thought all the positions to see if one exist
+        # Checks through all the positions to see if one exist
         for rating in self.ratings:
             # Checks if the position exists as one of the player's ratings
             if rating[1] == position:
@@ -88,6 +88,19 @@ class Squad:
         # Creates the 15 other arrays within rankings
         for _ in range(15):
             self.rankings.append([])
+
+    @staticmethod
+    def standardise_name(name):
+        # imports regex
+        import re
+        # Splits the name into an array where each item is a word in the name
+        names = [x for x in re.split(" |_", str(name)) if x != '']
+        # Iterates though each item in the array
+        for index in range(len(names)):
+            # Capitalises the word in each item of the array
+            names[index] = names[index].capitalize()
+        # Returns the joined elements of the array which are separated by underscores
+        return "_".join(names)
 
     def add_player(self, name):
         # Takes the name and passes it to standardise_name() and this outputs a standardised name
@@ -154,7 +167,7 @@ class Squad:
         if index is None:
             raise ValueError(name + " does not exist as a Player")
         else:
-            # Iterates thought all the player's ratings
+            # Iterates through all the player's ratings
             for ratings in range(self.players[index].ratings):
                 # Finds the position in the player's rating array and then deletes it
                 self.players[index].delete_rating(position)
@@ -184,19 +197,6 @@ class Squad:
                 return index
         return None
 
-    @staticmethod
-    def standardise_name(name):
-        # imports regex
-        import re
-        # Splits the name into an array where each item is a word in the name
-        names = [x for x in re.split(" |_", str(name)) if x != '']
-        # Iterates though each item in the array
-        for index in range(len(names)):
-            # Capitalises the word in each item of the array
-            names[index] = names[index].capitalize()
-        # Returns the joined elements of the array which are separated by underscores
-        return "_".join(names)
-
     def add_ranking(self, player, rating, position):
         position = position - 1
         index = self.find_player(player)
@@ -213,7 +213,8 @@ class Squad:
                 # Checks is the players rating is already in the ranking array
                 if (player, rating) == self.rankings[position][index]:
                     return
-                # If we find a rating that is less than the one we are trying to add the new position goes between this one and the previous one
+                # If we find a rating that is less than the one we are trying to add the new position goes between this
+                # one and the previous one
                 elif rating > self.rankings[position][index][1]:
                     # Inserts the tuple into the list at the point specified by index
                     self.rankings[position].insert(index, (player, rating))
@@ -227,7 +228,8 @@ class Squad:
         # Iterates through all the player's ratings
         for positions in range(len(self.players[index].ratings)):
             # Calls the add_ranking function
-            self.add_ranking(player, self.players[index].ratings[positions][0], self.players[index].ratings[positions][1])
+            self.add_ranking(player, self.players[index].ratings[positions][0],
+                             self.players[index].ratings[positions][1])
 
     def remove_ranking(self, player, position):
         position = position - 1
@@ -254,8 +256,11 @@ class Squad:
         self.add_ranking(player, rating, position)
 
     def update_team(self, team):
+        # Checks if team is None
         if team is None:
+            # Empties the array teams
             self.teams = []
+            # Runs build_teams function
             self.build_teams(team)
         else:
             # Clears the team by setting the object to a blank list
@@ -265,12 +270,16 @@ class Squad:
             self.build_teams(team)
 
     def build_teams(self, team):
+        # Checks if team is None
         if team is not None:
+            # Sets the index to the value of team - 1
             index = team - 1
+            # Sets the team at a specific index to a blank list
             self.teams[index] = []
         else:
             # Sets the index to the current length of the list
             index = len(self.teams)
+        # checks if the value of index is equal to the length of the list subs
         if index == len(self.subs):
             self.subs.append([])
         # Appends a new list to the teams list
@@ -283,109 +292,153 @@ class Squad:
                 if any(self.rankings[positions][levels][0] in sublist for sublist in self.teams) is False:
                     # Appends the player to the team
                     # "team.append(self.rankings[positions][levels])" should be used when the raking wants to be stored
-                    # "team.append(self.rankings[positions][levels][0])" should be used when the raking wants to be discarded
+                    # "team.append(self.rankings[positions][levels][0])" should be used when the raking wants to be
+                    # discarded
                     self.teams[index].append(self.rankings[positions][levels][0])
                     break
         if len(self.subs[index]) != 0:
+            # Iterates thorough all the items in the list subs[index]
             for positions in range(len(self.subs[index])):
                 # Iterates thorough the amount of subs that are needed
                 for levels in range(index, len(self.rankings[self.subs[index][positions]])):
                     # Checks to see if the player is already in any teams
-                    if any(self.rankings[self.subs[index][positions]][levels][0] in sublist for sublist in self.teams) is False:
+                    if any(self.rankings[self.subs[index][positions]][levels][0] in sublist for sublist in self.teams)\
+                            is False:
                         # Appends the player to the team
-                        # "team.append(self.rankings[self.subs[index][positions]][levels])" should be used when the raking wants to be stored
-                        # "team.append(self.rankings[self.subs[index][positions]][levels][0])" should be used when the raking wants to be discarded
+                        # "team.append(self.rankings[self.subs[index][positions]][levels])" should be used when the
+                        # raking wants to be stored
+                        # "team.append(self.rankings[self.subs[index][positions]][levels][0])" should be used when the
+                        # raking wants to be discarded
                         self.teams[index].append(self.rankings[self.subs[index][positions]][levels][0])
                         break
         # Checks if all 15 positions has been filled
         if len(self.teams[index]) == 15 + len(self.subs[index]):
+            # Checks if team is not None
             if team is not None:
+                # This calls the build_teams function again but with team + 1 as an argument
                 self.build_teams(team + 1)
             else:
-                # This calls the build_teams function again if all 15 positions have been filled
+                # This calls the build_teams function again but with None as an argument
                 self.build_teams(None)
         else:
             # This deletes the team if not all the positions are filled
             del self.teams[index]
+            # This deletes the subs if not all the positions are filled
             del self.subs[index]
 
     def players_not_playing(self):
+        # Initialises the list not_playing, which is used for players that are not playing
         not_playing = []
+        # Iterates through all the players in the squad
         for player in self.players:
+            # Checks if any of they players are not in a team
             if any(player.name in sublist for sublist in self.teams) is False:
+                # Appends the players name to the list not_playing
                 not_playing.append(player.name)
+        # Returns the list not_playing
         return not_playing
 
     def players_not_available(self):
+        # Initialises the list not_available, which is used for players that are not available
         not_available = []
+        # Iterates through all the players in the squad
         for player in self.players:
+            # Checks if the player's availability is False
             if player.availability is False:
+                # Appends the players name to the list not_available
                 not_available.append(player.name)
+        # Returns the list not_available
         return not_available
 
     def add_sub(self, team, position):
-        position = position - 1
-        team = team - 1
+        # Decrements the value of position by 1
+        position -= 1
+        # Decrements the value of team by 1
+        team -= 1
         # Validates if the team exist
-        if team > len(self.subs):
+        if team + 1 > len(self.subs):
             raise ValueError("The team entered does not exist")
+        # Checks if the positions is already a sub
         elif position in self.subs[team]:
             return
         else:
+            # Iterates through all the subs
             for index in range(len(self.subs[team])):
                 # Checks is the position is less than the current position`
                 if position < self.subs[team][index]:
                     # Inserts the position into the list at the point specified by index
                     self.subs[team].insert(index, position)
                     return
-            # This position was higher than all the others so just appended
+            # This position was higher than all the others so it was appended
             self.subs[team].append(position)
 
     def remove_sub(self, team, position):
-        position = position - 1
-        team = team - 1
+        # Decrements the value of position by 1
+        position -= 1
+        # Decrements the value of team by 1
+        team -= 1
         # Validates if the team exist
-        if team > len(self.subs):
+        if team + 1 > len(self.subs):
             raise ValueError("The team entered does not exist")
+        # Checks if the positions is a sub
         elif position in self.subs[team]:
+            # Removes the position form the list of subs
             self.subs[team].remove(position)
         else:
             return
 
     def clear_sub(self, team):
-        team = team - 1
+        # Decrements the value of team by 1
+        team -= 1
         # Validates if the team exist
-        if team > len(self.subs):
+        if team + 1 > len(self.subs):
             raise ValueError("The team entered does not exist")
         else:
+            # Sets the list subs[team] to a blank list
             self.subs[team] = []
 
     def import_players(self, file):
         import csv
+        # Opens the CSV file
         with open(file, 'r') as csv_file:
+            # Sets the the CSV to player_reader
             player_reader = csv.reader(csv_file)
+            # Iterates through all the rows in the CSV
             for row in player_reader:
+                # Calls add player on the data in the first column
                 self.add_player(row[0])
+                # Checks if there are more than 1 column
                 if (len(row) - 1) % 2 == 0:
+                    # Iterates through all the rankings in the CSV
                     for ratings in range((len(row) - 1) // 2):
+                        # Calls the add_ratings of the data from the CSV
                         self.add_ratings(row[0], int(row[(ratings * 2) + 2]), int(row[(ratings * 2) + 1]))
 
     def find_players_team(self, name):
+        # Takes the name and passes it to standardise_name() and this outputs a standardised name
         name = self.standardise_name(name)
-        for i in range(len(self.teams)):
-            for player in self.teams[i]:
+        for index in range(len(self.teams)):
+            for player in self.teams[index]:
                 if player == name:
-                    return i
+                    return index
         return None
 
     def output_player_positions(self, name):
+        # Takes the name and passes it to standardise_name() and this outputs a standardised name
         name = self.standardise_name(name)
+        # Finds the position of the player in players array
         index = self.find_player(name)
+        # Initialises ratings as an empty list
         ratings = []
+        # Initialises positions as an empty list
         positions = []
+        # Iterates trough all the player's ratings
         for rating in self.players[index].ratings:
+            # Appends the rating to the ratings list
             ratings.append(rating[0])
+            # Appends the position to the positions list
             positions.append(rating[1])
+        # Returns a tuple of containing the list of positions and the list of ratings
         return ratings, positions
 
     @property
@@ -399,6 +452,18 @@ class Squad:
             raise ValueError("The age group entered must be less than 30 characters: "+str(value)+" is too long")
         else:
             self._age_group = value
+
+    @property
+    def ordinal(self):
+        return self._ordinal
+
+    @ordinal.setter
+    def ordinal(self, value):
+        # Validates if the rating's length is less than 30 characters
+        if value is not True and value is not False:
+            raise ValueError("The argument for ordinal entered must be a boolean")
+        else:
+            self._ordinal = value
 
 
 class School:
