@@ -1,0 +1,17 @@
+table#ratings td, th {
+  border: 1px solid #BBB;
+  text-align: left;
+  padding: 8px 16px;
+}
+
+table#ratings tr:nth-child(1) {
+  font-weight: bold;
+}
+
+table#ratings th.position {
+    text-align: center;
+}
+
+table#ratings th.rating {
+    text-align: center;
+}
