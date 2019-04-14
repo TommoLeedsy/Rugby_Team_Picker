@@ -60,7 +60,7 @@ class Player:
 
     @property
     def name(self):
-        return self.name
+        return self._name
 
     @name.setter
     def name(self, value):
@@ -68,15 +68,15 @@ class Player:
         if len(value) > 40:
             raise ValueError("The name entered must be less than 40 characters: "+str(value)+" is too long")
         else:
-            self.name = value
+            self._name = value
 
 
 class Squad:
     def __init__(self, age_group, ordinal):
         #  Stores the Age Group
-        self.age_group = age_group
+        self._age_group = age_group
         # Stores the age group
-        self.ordinal = ordinal
+        self._ordinal = ordinal
         # Stores an array of player objects
         self.players = []
         # Stores all the teams
@@ -105,7 +105,9 @@ class Squad:
     def add_player(self, name):
         # Takes the name and passes it to standardise_name() and this outputs a standardised name
         name = self.standardise_name(name)
-        if self.find_player(name) is None:
+        if len(name) > 40:
+            raise ValueError("The name entered must be less than 40 characters: "+str(name)+" is too long")
+        elif self.find_player(name) is None:
             # Appends the standardised name to the class Player
             self.players.append(Player(name))
 
@@ -399,20 +401,23 @@ class Squad:
 
     def import_players(self, file):
         import csv
-        # Opens the CSV file
-        with open(file, 'r') as csv_file:
-            # Sets the the CSV to player_reader
-            player_reader = csv.reader(csv_file)
-            # Iterates through all the rows in the CSV
-            for row in player_reader:
-                # Calls add player on the data in the first column
-                self.add_player(row[0])
-                # Checks if there are more than 1 column
-                if (len(row) - 1) % 2 == 0:
-                    # Iterates through all the rankings in the CSV
-                    for ratings in range((len(row) - 1) // 2):
-                        # Calls the add_ratings of the data from the CSV
-                        self.add_ratings(row[0], int(row[(ratings * 2) + 2]), int(row[(ratings * 2) + 1]))
+        try:
+            # Opens the CSV file
+            with open(file, 'r') as csv_file:
+                # Sets the the CSV to player_reader
+                player_reader = csv.reader(csv_file)
+                # Iterates through all the rows in the CSV
+                for row in player_reader:
+                    # Calls add player on the data in the first column
+                    self.add_player(row[0])
+                    # Checks if there are more than 1 column
+                    if (len(row) - 1) % 2 == 0:
+                        # Iterates through all the rankings in the CSV
+                        for ratings in range((len(row) - 1) // 2):
+                            # Calls the add_ratings of the data from the CSV
+                            self.add_ratings(row[0], int(row[(ratings * 2) + 2]), int(row[(ratings * 2) + 1]))
+        except FileNotFoundError:
+            raise FileNotFoundError("The file entered: " + file + " does not exist")
 
     def find_players_team(self, name):
         # Takes the name and passes it to standardise_name() and this outputs a standardised name
@@ -443,7 +448,7 @@ class Squad:
 
     @property
     def age_group(self):
-        return self.age_group
+        return self._age_group
 
     @age_group.setter
     def age_group(self, value):
@@ -451,11 +456,11 @@ class Squad:
         if len(value) > 30:
             raise ValueError("The age group entered must be less than 30 characters: "+str(value)+" is too long")
         else:
-            self.age_group = value
+            self._age_group = value
 
     @property
     def ordinal(self):
-        return self.ordinal
+        return self._ordinal
 
     @ordinal.setter
     def ordinal(self, value):
@@ -463,13 +468,13 @@ class Squad:
         if value is not True and value is not False:
             raise ValueError("The argument for ordinal entered must be a boolean")
         else:
-            self.ordinal = value
+            self._ordinal = value
 
 
 class School:
     def __init__(self, name):
         # Stores the name of the School
-        self.name = name
+        self._name = name
         # Stores a list of Squads
         self.squads = []
 
@@ -493,7 +498,7 @@ class School:
 
     @property
     def name(self):
-        return self.name
+        return self._name
 
     @name.setter
     def name(self, value):
@@ -501,4 +506,4 @@ class School:
         if len(value) > 30:
             raise ValueError("The school name entered must be less than 30 characters: " + str(value) + " is too long")
         else:
-            self.name = value
+            self._name = value
