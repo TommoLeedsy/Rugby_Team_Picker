@@ -31,7 +31,7 @@ def root():
 
 
 @app.route('/teamsheet/')
-@app.route('/teamsheet/<age_group>/<team>')
+@app.route('/teamsheet/<age_group>/<team>/')
 def team(age_group=None,team=None):
     positions = ["Loosehead Prop", "Hooker", "Tighthead Prop", "Second Row", "Second Row", "Blindside Flanker",
                  "Openside Flanker", "Number Eight", "Scrum-Half", "Fly-Half", "Left Wing", "Inside Centre",
@@ -57,7 +57,7 @@ def team(age_group=None,team=None):
 
 
 @app.route('/player/')
-@app.route('/player/<name>', methods=['POST', 'GET'])
+@app.route('/player/<name>/', methods=['POST', 'GET'])
 def player(name=None):
     age_group = BC.find_player_age_group(name)
     if request.method == 'POST':
@@ -83,25 +83,35 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/setup/', methods=['GET', 'POST'])
-def upload_file():
+@app.route('/setup/')
+@app.route('/setup/<age_group>/', methods=['GET', 'POST'])
+def upload_file(age_group=None):
+    age_group = int(age_group) - 1
     success = ""
     error = ""
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
             error = "No file has been selected, please upload a file"
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            error = "No file has been selected, please upload a file"
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            success = "The file has been uploaded"
-            BC.squads[0].import_players('uploads/' + filename)
-    return render_template('setup.html', error=error, success=success)
+        else:
+            file = request.files['file']
+            # if user does not select file, browser also
+            # submit an empty part without filename
+            if file.filename == '':
+                error = "No file has been selected, please upload a file"
+            else:
+                if allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    success = "The file has been uploaded"
+                    try:
+                        BC.squads[age_group].import_players('uploads/' + filename)
+                    except FileNotFoundError as error:
+                        pass
+                else:
+                    error = "This file type is not allowed"
+    age_group = BC.squads[age_group].age_group
+    return render_template('setup.html', error=error, success=success, age_group=age_group)
 
 
 @app.after_request
