@@ -49,8 +49,7 @@ class Player:
                 # Deletes the tuple at the index found
                 self.ratings.remove((self.ratings[index][0], position))
                 return True
-        # raise ValueError("ERROR: The position entered must be in the list: " + str(position) + " is not in the list")
-        print("ERROR: The position entered must be in the list: " + str(position) + " is not in the list")
+        raise ValueError("The position entered must be in the list: " + str(position) + " is not in the list")
 
     def update_rating(self, rating, position):
         # Finds the position in the player's rating array and then deletes it
