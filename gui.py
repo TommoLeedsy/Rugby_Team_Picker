@@ -8,12 +8,19 @@ ALLOWED_EXTENSIONS = set(['csv'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# logged_in = False
 
 
 def normalise_name(name):
     name = name.split("_")
     return " ".join(name)
+
+
+def index_to_team_name(age_group, team):
+    if BC.squads[age_group].ordinal is True:
+        team_name = str(team + 1) + "XV"
+    else:
+        team_name = BC.squads[age_group].age_group + chr(team + 65)
+    return team_name
 
 
 @app.route('/')
@@ -23,59 +30,135 @@ def root():
     for i in range(len(BC.squads)):
         all_teams.append((BC.squads[i].age_group,[]))
         for j in range(len(BC.squads[i].teams)):
-            if BC.squads[i].ordinal is True:
-                all_teams[i][1].append(str(j + 1) + "XV")
-            else:
-                all_teams[i][1].append(BC.squads[i].age_group + chr(j + 65))
+            all_teams[i][1].append(index_to_team_name(i, j))
     return render_template('index.html', all_teams=all_teams, school=school)
 
 
-@app.route('/teamsheet/')
-@app.route('/teamsheet/<age_group>/<team>/')
-def team(age_group=None,team=None):
+@app.route('/team/')
+@app.route('/team/<age_group>/<team>', methods=['POST', 'GET'])
+def team(age_group=None, team=None):
     positions = ["Loosehead Prop", "Hooker", "Tighthead Prop", "Second Row", "Second Row", "Blindside Flanker",
                  "Openside Flanker", "Number Eight", "Scrum-Half", "Fly-Half", "Left Wing", "Inside Centre",
                  "Outside Centre", "Right Wing", "Full-Back"]
     team = int(team) - 1
     age_group = int(age_group) - 1
+    error = ""
+    if request.method == 'POST':
+        data = request.form.to_dict()
+        key = list(data)[0]
+        position = int(request.form[key])
+        if position != 0:
+            if key == "remove":
+                BC.squads[age_group].remove_sub(team, position)
+            elif key == "add":
+                BC.squads[age_group].add_sub(team, position)
+            BC.squads[age_group].build_teams(team)
+        else:
+            error = "No sub has been selected, please select a sub from the dropdown box below"
+    subs_positions = [sub + 1 for sub in BC.squads[age_group].subs[team]]
+    subs = ["Substitute " + positions[sub] for sub in BC.squads[age_group].subs[team]]
+    team_name = index_to_team_name(age_group, team)
+    return render_template('team.html', team_name=team_name, age_group=age_group+1, team=team+1, subs=subs,
+                           subs_positions=subs_positions, positions=positions, error=error)
+
+
+@app.route('/teamsheet/')
+@app.route('/teamsheet/<age_group>/<team>', methods=['POST', 'GET'])
+def teamsheet(age_group=None, team=None):
+    positions = ["Loosehead Prop", "Hooker", "Tighthead Prop", "Second Row", "Second Row", "Blindside Flanker",
+                 "Openside Flanker", "Number Eight", "Scrum-Half", "Fly-Half", "Left Wing", "Inside Centre",
+                 "Outside Centre", "Right Wing", "Full-Back"]
+    team = int(team) - 1
+    age_group = int(age_group) - 1
+    remaining_players = []
+    error = ""
+    if request.method == 'POST':
+        data = request.form.to_dict()
+        key = list(data)[0], list(data)[1]
+        position = int(request.form[key[0]])
+        player = request.form[key[1]]
+        if position == 0 and player == 0:
+            error = "Neither a player or position has been selected, please select both a player and position"
+        elif position == 0:
+            error = "No position has been selected, please select a position"
+        elif player == 0:
+            error = "No player has been selected, please select a player"
+        else:
+            try:
+                BC.squads[age_group].set_player(team + 1, player, position)
+            except ValueError as error:
+                pass
     subs = ["Substitute " + positions[sub] for sub in BC.squads[age_group].subs[team]]
     positions = positions + subs
     names = [normalise_name(name) for name in BC.squads[age_group].teams[team]]
+    for all_player in BC.squads[age_group].players:
+        if normalise_name(all_player.name) not in names:
+            remaining_players.append((all_player.name, normalise_name(all_player.name)))
     team_below = team + 2
     if team_below > len(BC.squads[age_group].teams):
         team_below = None
     team_above = team
     if team_above == 0:
         team_above = None
-    if BC.squads[age_group].ordinal is True:
-        team_name = str(team + 1) + "XV"
-    else:
-        team_name = BC.squads[age_group].age_group + chr(team + 65)
+    team_name = index_to_team_name(age_group, team)
     return render_template('teamsheet.html', positions=positions, team_name=team_name, age_group=age_group+1,
-                           names=names, players=BC.squads[age_group].teams[team], team_above=team_above,
-                           team_below=team_below)
+                           team=team+1, names=names, players=BC.squads[age_group].teams[team], team_above=team_above,
+                           team_below=team_below, remaining_players=remaining_players, error=error)
 
 
 @app.route('/player/')
-@app.route('/player/<name>/', methods=['POST', 'GET'])
+@app.route('/player/<name>', methods=['POST', 'GET'])
 def player(name=None):
+    all_positions = ["Loosehead Prop", "Hooker", "Tighthead Prop", "Second Row", "Second Row", "Blindside Flanker",
+                 "Openside Flanker", "Number Eight", "Scrum-Half", "Fly-Half", "Left Wing", "Inside Centre",
+                 "Outside Centre", "Right Wing", "Full-Back"]
     age_group = BC.find_player_age_group(name)
+    error = ""
     if request.method == 'POST':
-        BC.squads[age_group].set_player_availability(name, not BC.squads[age_group].player_availability(name))
-        BC.squads[age_group].update_team(BC.squads[age_group].find_players_team(name))
-    ratings, positions = BC.squads[age_group].output_player_positions(name)
+        data = request.form.to_dict()
+        if len(data) == 1:
+            key = list(data)[0]
+            if key == "availability":
+                availability = request.form[key]
+                if availability == "True":
+                    availability = True
+                elif availability == "False":
+                    availability = False
+                BC.squads[age_group].set_player_availability(name, availability)
+                BC.squads[age_group].update_team(BC.squads[age_group].find_players_team(name))
+            elif key == "remove":
+                BC.squads[age_group].remove_ranking(name, int(request.form[key]))
+                BC.squads[age_group].remove_ratings(name, int(request.form[key]))
+                BC.squads[age_group].update_team(BC.squads[age_group].find_players_team(name))
+        else:
+            key = list(data)[0], list(data)[1]
+            position = int(request.form[key[0]])
+            rating = int(request.form[key[1]])
+            if position == 0 and rating == 0:
+                error = "Neither a position or rating has been selected, please select both a player and rating"
+            elif position == 0:
+                error = "No position has been selected, please select a position"
+            elif rating == 0:
+                error = "No player has been selected, please select a rating"
+            else:
+                try:
+                    BC.squads[age_group].add_ratings(name, rating, position)
+                    BC.squads[age_group].update_team(BC.squads[age_group].find_players_team(name))
+                except ValueError as error:
+                    pass
+    text_positions = []
+    ratings, int_positions = BC.squads[age_group].output_player_positions(name)
+    for position in int_positions:
+        text_positions.append(all_positions[position - 1])
     team = BC.squads[age_group].find_players_team(name)
     if team is not None:
-        if BC.squads[age_group].ordinal is True:
-            team_name = str(team + 1) + "XV"
-        else:
-            team_name = BC.squads[age_group].age_group + chr(team + 65)
+        team_name = index_to_team_name(age_group, team)
     else:
         team_name = None
     return render_template('player.html', name=name, n_name=normalise_name(name),
-                           availability=BC.squads[age_group].player_availability(name),
-                           not_availability=not BC.squads[age_group].player_availability(name), team=team,
-                           team_name=team_name, age_group=age_group, ratings=ratings, positions=positions)
+                           set_availability=not BC.squads[age_group].player_availability(name), team=team,
+                           team_name=team_name, age_group=age_group, ratings=ratings, int_positions=int_positions,
+                           text_positions=text_positions, all_positions=all_positions, error=error)
 
 
 def allowed_file(filename):
@@ -83,12 +166,24 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/setup/')
-@app.route('/setup/<age_group>/', methods=['GET', 'POST'])
-def upload_file(age_group=None):
+@app.route('/squad/')
+@app.route('/squad/<age_group>', methods=['GET', 'POST'])
+def squad(age_group=None):
     age_group = int(age_group) - 1
     success = ""
     error = ""
+    players = []
+    for player in BC.squads[age_group].players:
+        team = BC.squads[age_group].find_players_team(player.name)
+        if team is not None:
+            if BC.squads[age_group].ordinal is True:
+                team_name = str(team + 1) + "XV"
+            else:
+                team_name = BC.squads[age_group].age_group + chr(team + 65)
+            team += 1
+        else:
+            team_name = None
+        players.append(((player.name, normalise_name(player.name)), (team, team_name)))
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -110,8 +205,9 @@ def upload_file(age_group=None):
                         pass
                 else:
                     error = "This file type is not allowed"
+    index = age_group + 1
     age_group = BC.squads[age_group].age_group
-    return render_template('setup.html', error=error, success=success, age_group=age_group)
+    return render_template('squad.html', error=error, success=success, age_group=age_group, index=index, players=players)
 
 
 @app.after_request

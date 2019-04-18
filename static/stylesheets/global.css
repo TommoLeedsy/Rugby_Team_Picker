@@ -20,3 +20,47 @@ table {
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   color: #222;
 }
+
+table td, th {
+  border: 1px solid #BBB;
+  text-align: left;
+  padding: 8px 16px;
+}
+
+h4.error {
+  color: red;
+}
+
+h4.success {
+  color: green;
+}
+
+button, input[type="submit"] {
+  text-transform: uppercase;
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+td.button {
+  width: 67px;
+  text-align: center;
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+select {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  background-image: none;
+  -webkit-appearance: none;
+}
+
+select:focus {
+    outline: none;
+}

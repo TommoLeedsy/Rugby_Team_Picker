@@ -133,7 +133,7 @@ class Squad:
             if availability is False:
                 # Removes all the player's rankings if the player's availability set to false
                 self.remove_all_rankings(player)
-            else:
+            elif availability is True:
                 # Adds all the player's rankings if the player's availability set to true
                 self.add_all_rankings(player)
 
@@ -164,15 +164,17 @@ class Squad:
         name = self.standardise_name(name)
         # Finds the players index in players
         index = self.find_player(name)
+        print(index)
         # Validates if the player exists
         if index is None:
             raise ValueError(name + " does not exist as a Player")
         else:
             # Iterates through all the player's ratings
-            for ratings in range(self.players[index].ratings):
+            for ratings in self.players[index].ratings:
                 # Finds the position in the player's rating array and then deletes it
-                self.players[index].delete_rating(position)
-                self.remove_ranking(name, position)
+                if ratings[1] == position:
+                    self.players[index].delete_rating(position)
+                    self.remove_ranking(name, position)
 
     def update_ratings(self, name, rating, position):
         # Takes the name and passes it to standardise_name() and this outputs a standardised name
@@ -266,25 +268,29 @@ class Squad:
         else:
             # Clears the team by setting the object to a blank list
             for i in range(team, len(self.teams) - team):
-                self.teams[i] = []
+                del self.teams[team]
             # Calls the build_teams function
             self.build_teams(team)
 
     def build_teams(self, team):
         # Checks if team is None
         if team is not None:
-            # Sets the index to the value of team - 1
-            index = int(team) - 1
+            # Sets the index to the integer value of team
+            index = int(team)
             # Sets the team at a specific index to a blank list
-            self.teams[index] = []
         else:
             # Sets the index to the current length of the list
             index = len(self.teams)
+        # checks if the value of index is equal to the length of the list teams
+        if index == len(self.teams):
+            # Appends a new list to the subs list
+            self.teams.append([])
         # checks if the value of index is equal to the length of the list subs
         if index == len(self.subs):
+            # Appends a new list to the subs list
             self.subs.append([])
-        # Appends a new list to the teams list
-        self.teams.append([])
+        # Sets the current value of the list to a blank list
+        self.teams[index] = []
         # Iterates through the positions
         for positions in range(15):
             # Iterates thorough the all the position's rankings
@@ -324,8 +330,24 @@ class Squad:
         else:
             # This deletes the team if not all the positions are filled
             del self.teams[index]
-            # This deletes the subs if not all the positions are filled
-            del self.subs[index]
+
+    def set_player(self, team, player, position):
+        # Takes the name and passes it to standardise_name() and this outputs a standardised name
+        player = self.standardise_name(player)
+        # Finds the position of the player in players array
+        index = self.find_player(player)
+        # Decrements the value of team by 1
+        team -= 1
+        # Decrements the value of position by 1
+        position -= 1
+        # Checks if the player exists
+        if index is None:
+            raise ValueError("The player dose not exist")
+        else:
+            # Sets the data at that index to player
+            self.teams[team][position] = player
+            # This calls the build_teams function again but with team + 1 as an argument
+            self.build_teams(team + 1)
 
     def players_not_playing(self):
         # Initialises the list not_playing, which is used for players that are not playing
@@ -354,8 +376,6 @@ class Squad:
     def add_sub(self, team, position):
         # Decrements the value of position by 1
         position -= 1
-        # Decrements the value of team by 1
-        team -= 1
         # Validates if the team exist
         if team + 1 > len(self.subs):
             raise ValueError("The team entered does not exist")
@@ -376,8 +396,6 @@ class Squad:
     def remove_sub(self, team, position):
         # Decrements the value of position by 1
         position -= 1
-        # Decrements the value of team by 1
-        team -= 1
         # Validates if the team exist
         if team + 1 > len(self.subs):
             raise ValueError("The team entered does not exist")

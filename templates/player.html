@@ -2,28 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="{{ url_for('static', filename='stylesheets/global.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ url_for('static', filename='stylesheets/player.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='stylesheets/global.css') }}" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
     <title>{{ n_name }}'s Player Page</title>
 </head>
 <body>
     <h1> {{ n_name }} </h1>
+    <h4 class="error">{{ error }}</h4>
     {% if team is none %}
         <p> They have not been selected for a Team</p>
     {% else %}
         <p> They have been selected the <a href="/teamsheet/{{ age_group + 1 }}/{{ team + 1}}">{{ team_name}}</a></p>
     {%  endif %}
-    <p>There availability is {{ availability }}</p>
-    <form action="/player/{{ name }}" method="POST">
-        <input type="submit" value="Set availability to {{ not_availability}}">
+    <br>
+    <form method="post" action="{{url_for('player', name=name)}}">
+        <button id="availability" type="submit" name="availability" value="{{ set_availability }}">Set availability to {{ set_availability}}</button>
     </form>
     <br>
     <table id="ratings">
-      <tr> <th class="position">Positions</th> <th class="rating">Ratings</th> <th class="edit"></th> </tr>
-      {% for i in range(ratings|length) %}
-        <tr> <td class="position">{{ positions[i] }}</td> <td class="rating">{{ ratings[i] }}</td> <td class="edit"> Edit </td> </tr>
-        {% endfor %}
+      <tr>
+        <th class="position">Positions</th>
+        <th class="rating">Ratings</th>
+        <th class="whitespace"></th>
+      </tr>
+      {% for i in range(text_positions|length) %}
+      <form method="post" action="{{url_for('player', name=name)}}">
+        <tr>
+          <td class="position">{{ text_positions[i] }}</td>
+          <td class="rating">{{ ratings[i] }}</td>
+          <td class="button"><button type="submit" name="remove" value="{{ int_positions[i] }}">remove</button></td>
+        </tr>
+      </form>
+      {% endfor %}
     </table>
+    <br>
+    <table>
+        <tr>
+          <form method="post" action="{{url_for('player', name=name)}}">
+            <td>
+              <select name="position" required>
+                <option value="0">Select a position</option>
+                {% for i in range(15) %}
+                <option value="{{ i + 1 }}">{{ all_positions[i] }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td>
+                <select name="rating" required>
+                  <option value="0">Select a rating</option>
+                  {% for j in range(10) %}
+                  <option value="{{ j + 1 }}">{{ j + 1 }}</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td class="button">
+              <input type="submit" value="Edit Rating" required pattern="{1-15}">
+            </td>
+          </form>
+        </tr>
+      </table>
 </body>
 </html>

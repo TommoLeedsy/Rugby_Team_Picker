@@ -9,6 +9,8 @@
   </head>
   <body>
     <h1>{{ team_name }} Teamsheet</h1>
+    <h3><a href="/team/{{ age_group }}/{{ team }}">{{ team_name }} Settings</a></h3>
+    <br>
     <table id="team">
       <tr> <th class="numbers">#</th> <th class="positions">Position</th> <th class="players">Name</th> </tr>
       {% for i in range(players|length) %}
@@ -27,5 +29,32 @@
         <div class="whitespace"></div>
       {% endif %}
     </div>
+    <br>
+    <h4 class="error"> {{ error }}</h4>
+    <table>
+        <tr>
+          <form method="post" action="{{url_for('teamsheet', age_group=age_group, team=team)}}">
+            <td>
+              <select name="position" required>
+                <option value="0">Select a position</option>
+                {% for j in range(positions|length) %}
+                <option value="{{ j + 1 }}">{{ positions[j] }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td>
+                <select name="player" required>
+                  <option value="0">Select a player</option>
+                  {% for j in range(remaining_players|length) %}
+                  <option value="{{remaining_players[j][0]}}">{{ remaining_players[j][1] }}</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td class="button">
+              <input type="submit" value="Edit Team" required pattern="{1-15}">
+            </td>
+          </form>
+        </tr>
+      </table>
   </body>
 </html>

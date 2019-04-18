@@ -1,0 +1,19 @@
+td.numbers, th.numbers {
+  width: 17px;
+}
+
+td.positions, th.positions {
+  width: 187px;
+}
+
+td#no_subs {
+  text-align: center;
+}
+
+th.whitespace {
+  width: 47px;
+}
+
+select {
+  width: 217px;
+}

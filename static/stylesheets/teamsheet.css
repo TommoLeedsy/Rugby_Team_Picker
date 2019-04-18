@@ -1,15 +1,13 @@
-table#team td, th {
-  border: 1px solid #BBB;
-  text-align: left;
-  padding: 8px 16px;
+table#team td.numbers {
+  width: 17px;
 }
 
 table#team th.positions {
-    width: 186px;
+    width: 187px;
 }
 
 table#team th.players {
-    width: 265px
+    width: 297px
 }
 
 table#team tr:nth-child(1) {
@@ -40,4 +38,8 @@ div.change_team a {
 div.whitespace {
      display: inline-block;
      width: 16px;
+}
+
+select {
+  width: 217px;
 }

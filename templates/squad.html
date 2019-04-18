@@ -2,12 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="{{ url_for('static', filename='stylesheets/global.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ url_for('static', filename='stylesheets/squad.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='stylesheets/global.css') }}" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
-    <title>Title</title>
+    <title>{{ age_group }} Squad Settings</title>
 </head>
 <body>
-
+  <h1>{{ age_group }} Squad Settings</h1>
+  <h3>Upload a CSV file with all the players name for this age group</h3>
+  <h4 class="error">{{ error }}</h4>
+  <h4 class="success">{{ success }}</h4>
+  <br>
+  <form method=post>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+  </form>
+  <br>
+  <br>
+  <h2>{{ age_group }} Players:</h2>
+  <table id="players">
+    <tr>
+      <th class="players">Name</th>
+      <th class="team">Current Team</th>
+    </tr>
+    {% for i in range(players|length) %}
+      {% if players[i][1][1] is none %}
+        <tr>
+          <td class="players">
+            <a href="/player/{{ players[i][0][0] }}">{{ players[i][0][1] }}</a>
+          </td>
+          <td class="team">{{ players[i][1][1] }}</td>
+        </tr>
+      {% else %}
+        <tr>
+          <td class="players">
+            <a href="/player/{{ players[i][0][0] }}">{{ players[i][0][1] }}</a>
+          </td>
+          <td class="team">
+            <a href="/teamsheet/{{ index }}/{{ players[i][1][0] }}">{{ players[i][1][1] }}<a>
+            </td>
+          </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+  <br>
 </body>
 </html>

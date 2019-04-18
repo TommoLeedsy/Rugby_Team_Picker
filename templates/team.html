@@ -2,12 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="{{ url_for('static', filename='stylesheets/global.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ url_for('static', filename='stylesheets/team.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='stylesheets/global.css') }}" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
-    <title>Title</title>
+    <title>{{ team_name }} Settings</title>
 </head>
 <body>
-
+  <h1>{{ team_name }} Settings</h1>
+  <h4 class="error">{{ error }}</h4>
+  <h3><a href="/teamsheet/{{ age_group }}/{{ team }}"> {{ team_name }} Teamsheet</a></h3>
+  <br>
+  <table id="subs">
+    <tr>
+      <th class="numbers">#</th>
+      <th class="positions">Position</th>
+      <th class="whitespace"></th>
+    </tr>
+    {% if subs|length == 0 %}
+    <tr>
+      <td id="no_subs" colspan="3">This team has no subs</td>
+    </tr>
+    {% else%}
+      {% for i in range(subs|length) %}
+      <form method="post" action="{{url_for('team', age_group=age_group, team=team)}}">
+        <tr>
+          <td class="numbers">{{ i + 16 }}</td>
+          <td class="positions">{{ subs[i] }}</td>
+          <td class="button"><button type="submit" name="remove" value="{{ subs_positions[i] }}">remove</button></td>
+        </tr>
+      </form>
+      {% endfor %}
+    {% endif %}
+</table>
+<br>
+<table>
+    <tr>
+      <form method="post" action="{{url_for('team', age_group=age_group, team=team)}}">
+        <td colspan="2">
+            <select name="add" required>
+              <option value="0">Select a sub</option>
+              {% for j in range(positions|length) %}
+              <option value="{{ j + 1 }}">{{ positions[j] }}</option>
+              {% endfor %}
+            </select>
+        </td>
+        <td class="button">
+          <input type="submit" value="Add Sub" required pattern="{1-15}">
+        </td>
+      </form>
+    </tr>
+  </table>
 </body>
 </html>
