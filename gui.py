@@ -52,7 +52,7 @@ def team(age_group=None, team=None):
                 BC.squads[age_group].remove_sub(team, position)
             elif key == "add":
                 BC.squads[age_group].add_sub(team, position)
-            BC.squads[age_group].build_teams(team)
+            BC.squads[age_group].build_teams(team, None)
         else:
             error = "No sub has been selected, please select a sub from the dropdown box below"
     subs_positions = [sub + 1 for sub in BC.squads[age_group].subs[team]]
@@ -70,30 +70,29 @@ def teamsheet(age_group=None, team=None):
                  "Outside Centre", "Right Wing", "Full-Back"]
     team = int(team) - 1
     age_group = int(age_group) - 1
-    remaining_players = []
     error = ""
     if request.method == 'POST':
         data = request.form.to_dict()
         key = list(data)[0], list(data)[1]
         position = int(request.form[key[0]])
-        player = request.form[key[1]]
-        if position == 0 and player == 0:
+        player_id = request.form[key[1]]
+        if position == 0 and player_id == 0:
             error = "Neither a player or position has been selected, please select both a player and position"
         elif position == 0:
             error = "No position has been selected, please select a position"
-        elif player == 0:
+        elif player_id == 0:
             error = "No player has been selected, please select a player"
         else:
             try:
-                BC.squads[age_group].set_player(team + 1, player, position)
+                BC.squads[age_group].set_player(team + 1, player_id, position)
             except ValueError as error:
                 pass
     subs = ["Substitute " + positions[sub] for sub in BC.squads[age_group].subs[team]]
     positions = positions + subs
     names = [normalise_name(name) for name in BC.squads[age_group].teams[team]]
-    for all_player in BC.squads[age_group].players:
-        if normalise_name(all_player.name) not in names:
-            remaining_players.append((all_player.name, normalise_name(all_player.name)))
+    all_players = []
+    for player in BC.squads[age_group].players:
+        all_players.append((player.name, normalise_name(player.name)))
     team_below = team + 2
     if team_below > len(BC.squads[age_group].teams):
         team_below = None
@@ -103,7 +102,7 @@ def teamsheet(age_group=None, team=None):
     team_name = index_to_team_name(age_group, team)
     return render_template('teamsheet.html', positions=positions, team_name=team_name, age_group=age_group+1,
                            team=team+1, names=names, players=BC.squads[age_group].teams[team], team_above=team_above,
-                           team_below=team_below, remaining_players=remaining_players, error=error)
+                           team_below=team_below, all_players=all_players, error=error)
 
 
 @app.route('/player/')
@@ -221,10 +220,10 @@ BC.add_squad("U18", True, 'BC_players.csv')
 BC.add_squad("U16", False, 'u16_players.csv')
 BC.add_squad("U15", False, 'u15_players.csv')
 BC.add_squad("U14", False, 'u14_players.csv')
-BC.squads[0].build_teams(None)
-BC.squads[1].build_teams(None)
-BC.squads[2].build_teams(None)
-BC.squads[3].build_teams(None)
+BC.squads[0].build_teams(None, None)
+BC.squads[1].build_teams(None, None)
+BC.squads[2].build_teams(None, None)
+BC.squads[3].build_teams(None, None)
 
 if __name__ == '__main__':
     app.run(debug=True)
