@@ -45,8 +45,8 @@
             <td>
                 <select name="player" required>
                   <option value="0">Select a player</option>
-                  {% for j in range(remaining_players|length) %}
-                  <option value="{{remaining_players[j][0]}}">{{ remaining_players[j][1] }}</option>
+                  {% for j in range(all_players|length) %}
+                  <option value="{{all_players[j][0]}}">{{ all_players[j][1] }}</option>
                   {% endfor %}
                 </select>
             </td>
