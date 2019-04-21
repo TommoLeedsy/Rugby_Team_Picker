@@ -264,23 +264,26 @@ class Squad:
             # Empties the array teams
             self.teams = []
             # Runs build_teams function
-            self.build_teams(team)
+            self.build_teams(team, None)
         else:
             # Clears the team by setting the object to a blank list
             for i in range(team, len(self.teams) - team):
                 del self.teams[team]
             # Calls the build_teams function
-            self.build_teams(team)
+            self.build_teams(team, None)
 
-    def build_teams(self, team):
+    def build_teams(self, team, player):
+        if player is None:
+            player = [None, None, None]
         # Checks if team is None
-        if team is not None:
+        if team is None:
             # Sets the index to the integer value of team
-            index = int(team)
-            # Sets the team at a specific index to a blank list
+            index = 0
+            # Sets self.teams to a empty list
+            self.teams = []
         else:
-            # Sets the index to the current length of the list
-            index = len(self.teams)
+            # Sets the index to the integer of team
+            index = int(team)
         # checks if the value of index is equal to the length of the list teams
         if index == len(self.teams):
             # Appends a new list to the subs list
@@ -293,16 +296,20 @@ class Squad:
         self.teams[index] = []
         # Iterates through the positions
         for positions in range(15):
-            # Iterates thorough the all the position's rankings
-            for levels in range(index, len(self.rankings[positions])):
-                # Checks to see if the player is already in any teams
-                if any(self.rankings[positions][levels][0] in sublist for sublist in self.teams) is False:
-                    # Appends the player to the team
-                    # "team.append(self.rankings[positions][levels])" should be used when the raking wants to be stored
-                    # "team.append(self.rankings[positions][levels][0])" should be used when the raking wants to be
-                    # discarded
-                    self.teams[index].append(self.rankings[positions][levels][0])
-                    break
+            if positions == player[2] and index == player[0]:
+                self.teams[index].append(player[1])
+            else:
+                # Iterates thorough the all the position's rankings
+                for levels in range(index, len(self.rankings[positions])):
+                    # Checks to see if the player is already in any teams
+                    if any(self.rankings[positions][levels][0] in sublist for sublist in self.teams) is False and \
+                            self.rankings[positions][levels][0] != player[1]:
+                        # Appends the player to the team
+                        # "team.append(self.rankings[positions][levels])" should be used when the raking wants to be stored
+                        # "team.append(self.rankings[positions][levels][0])" should be used when the raking wants to be
+                        # discarded
+                        self.teams[index].append(self.rankings[positions][levels][0])
+                        break
         if len(self.subs[index]) != 0:
             # Iterates thorough all the items in the list subs[index]
             for positions in range(len(self.subs[index])):
@@ -310,7 +317,7 @@ class Squad:
                 for levels in range(index, len(self.rankings[self.subs[index][positions]])):
                     # Checks to see if the player is already in any teams
                     if any(self.rankings[self.subs[index][positions]][levels][0] in sublist for sublist in self.teams)\
-                            is False:
+                            is False and self.rankings[positions][levels][0] != player[1]:
                         # Appends the player to the team
                         # "team.append(self.rankings[self.subs[index][positions]][levels])" should be used when the
                         # raking wants to be stored
@@ -321,12 +328,12 @@ class Squad:
         # Checks if all 15 positions has been filled
         if len(self.teams[index]) == 15 + len(self.subs[index]):
             # Checks if team is not None
-            if team is not None:
+            if team is None:
                 # This calls the build_teams function again but with team + 1 as an argument
-                self.build_teams(team + 1)
+                self.build_teams(1, player)
             else:
                 # This calls the build_teams function again but with None as an argument
-                self.build_teams(None)
+                self.build_teams(team + 1, player)
         else:
             # This deletes the team if not all the positions are filled
             del self.teams[index]
@@ -346,8 +353,8 @@ class Squad:
         else:
             # Sets the data at that index to player
             self.teams[team][position] = player
-            # This calls the build_teams function again but with team + 1 as an argument
-            self.build_teams(team + 1)
+            # This calls the build_teams function again but with tuple (team, player, position) as an argument
+            self.build_teams(None, (team, player, position))
 
     def players_not_playing(self):
         # Initialises the list not_playing, which is used for players that are not playing
