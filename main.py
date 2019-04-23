@@ -97,7 +97,7 @@ class Squad:
         # Iterates though each item in the array
         for index in range(len(names)):
             # Capitalises the word in each item of the array
-            names[index] = names[index].capitalize()
+            names[index] = names[index].title()
         # Returns the joined elements of the array which are separated by underscores
         return "_".join(names)
 
