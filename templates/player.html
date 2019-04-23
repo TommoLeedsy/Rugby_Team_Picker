@@ -42,7 +42,7 @@
           <form method="post" action="{{url_for('player', name=name)}}">
             <td>
               <select name="position" required>
-                <option value="0">Select a position</option>
+                <option value="">Select a position</option>
                 {% for i in range(15) %}
                 <option value="{{ i + 1 }}">{{ all_positions[i] }}</option>
                 {% endfor %}
@@ -50,7 +50,7 @@
             </td>
             <td>
                 <select name="rating" required>
-                  <option value="0">Select a rating</option>
+                  <option value="">Select a rating</option>
                   {% for j in range(10) %}
                   <option value="{{ j + 1 }}">{{ j + 1 }}</option>
                   {% endfor %}

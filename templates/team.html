@@ -40,7 +40,7 @@
       <form method="post" action="{{url_for('team', age_group=age_group, team=team)}}">
         <td colspan="2">
             <select name="add" required>
-              <option value="0">Select a sub</option>
+              <option value="">Select a sub</option>
               {% for j in range(positions|length) %}
               <option value="{{ j + 1 }}">{{ positions[j] }}</option>
               {% endfor %}

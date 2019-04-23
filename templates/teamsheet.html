@@ -36,7 +36,7 @@
           <form method="post" action="{{url_for('teamsheet', age_group=age_group, team=team)}}">
             <td>
               <select name="position" required>
-                <option value="0">Select a position</option>
+                <option value="">Select a position</option>
                 {% for j in range(positions|length) %}
                 <option value="{{ j + 1 }}">{{ positions[j] }}</option>
                 {% endfor %}
@@ -44,7 +44,7 @@
             </td>
             <td>
                 <select name="player" required>
-                  <option value="0">Select a player</option>
+                  <option value="">Select a player</option>
                   {% for j in range(all_players|length) %}
                   <option value="{{all_players[j][0]}}">{{ all_players[j][1] }}</option>
                   {% endfor %}
