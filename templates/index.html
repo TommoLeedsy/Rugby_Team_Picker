@@ -15,5 +15,23 @@
       <h4><a class="players" href="/teamsheet/{{ i + 1 }}/{{ j + 1 }}">{{ all_teams[i][1][j] }}</a></h4>
       {% endfor %}
     {% endfor %}
+    <br>
+    <table>
+        <tr>
+          <form method="post" action="{{url_for('index')}}">
+            <td>
+                <input
+                  required
+                  maxlength="3"
+                  pattern="[U]{1}[0-9]{2}"
+                  name="age_group"
+                  placeholder="Enter a new Age Group"></input>
+            </td>
+            <td class="button">
+              <button type="submit">Add New Age Group</button>
+            </td>
+          </form>
+        </tr>
+      </table>
 </body>
 </html>

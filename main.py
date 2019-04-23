@@ -47,7 +47,7 @@ class Player:
         for index in range(len(self.ratings)):
             if self.ratings[index][1] == position:
                 # Deletes the tuple at the index found
-                self.ratings.remove((self.ratings[index][0], position))
+                del self.ratings[index]
                 return True
         raise ValueError("The position entered must be in the list: " + str(position) + " is not in the list")
 
@@ -71,11 +71,11 @@ class Player:
 
 
 class Squad:
-    def __init__(self, age_group, ordinal):
+    def __init__(self, age_group,):
         #  Stores the Age Group
         self._age_group = age_group
         # Stores the age group
-        self._ordinal = ordinal
+        self._ordinal = False
         # Stores an array of player objects
         self.players = []
         # Stores all the teams
@@ -515,22 +515,43 @@ class School:
         # Stores a list of Squads
         self.squads = []
 
-    def add_squad(self, age_group, ordinal, csv):
-        # Sets the index of the new squad to the current number of squads
-        index = len(self.squads)
-        # Appends the new squad to the list of squads
-        self.squads.append(Squad(age_group, ordinal))
-        # Checks id csv is not None
+    def add_squad(self, age_group, csv):
+        # Goes though all the other squads the school has
+        for index in range(len(self.squads)):
+            # Checks if the current age group that is less than the one we are trying to add
+            if int(age_group[1:3]) > int(self.squads[index].age_group[1:3]):
+                # Inserts the squad into the list at the point specified by index
+                self.squads.insert(index, Squad(age_group),)
+                # Checks is csv is None
+                if csv is not None:
+                    # It then runs the function import_players to import the players into the new squad
+                    self.squads[index].import_players(csv)
+                return
+        # This age group was lower than all the others it just appends
+        self.squads.append(Squad(age_group))
+        # Checks is csv is None
         if csv is not None:
             # It then runs the function import_players to import the players into the new squad
-            self.squads[index].import_players(csv)
+            self.squads[len(self.squads) - 1].import_players(csv)
+
+    def delete_squad(self, age_group):
+        # deletes item in self.squads where the index is equal to age_group
+        del self.squads[age_group]
 
     def find_player_age_group(self, name):
-
         # Iterates through all the squads
         for index in range(len(self.squads)):
             # Checks if the payer is in the squad
             if self.squads[index].find_player(name) is not None:
+                return index
+        return None
+
+    def find_squad_index(self, age_group):
+        # Iterates through all the squads
+        for index in range(len(self.squads)):
+            # Checks if the age_group is in the school
+            if self.squads[index].age_group == age_group:
+                print(index)
                 return index
         return None
 

@@ -68,5 +68,9 @@
     {% endfor %}
   </table>
   <br>
+  <form method="post" action="{{url_for('squad', age_group=index)}}">
+      <button id="delete" type="submit" name="delete">Delete this Squad</button>
+  </form>
+  <br>
 </body>
 </html>

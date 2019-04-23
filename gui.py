@@ -39,10 +39,14 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/')
-def root():
+@app.route('/', methods=['POST', 'GET'])
+def index():
     all_teams = []
     school = BC.name
+    if request.method == 'POST':
+        if list(request.form.to_dict())[0] == 'age_group':
+            BC.add_squad(request.form['age_group'], None)
+            return redirect(url_for('squad', age_group=BC.find_squad_index(request.form['age_group']) + 1))
     for i in range(len(BC.squads)):
         all_teams.append((BC.squads[i].age_group,[]))
         for j in range(len(BC.squads[i].teams)):
@@ -206,6 +210,9 @@ def squad(age_group=None):
                 return redirect(url_for('player', name=standardise_name(request.form['player'])))
             except ValueError as error:
                 pass
+        elif list(request.form.to_dict())[0] == 'delete':
+            BC.delete_squad(age_group)
+            return redirect(url_for('index'))
         # check if the post request has the file part
         elif 'file' not in request.files:
             error = "No file has been selected, please upload a file"
@@ -232,14 +239,14 @@ def add_header(response):
 
 
 BC = backend.School("Brighton College")
-BC.add_squad("U18", True, 'BC_players.csv')
-BC.add_squad("U16", False, 'u16_players.csv')
-BC.add_squad("U15", False, 'u15_players.csv')
-BC.add_squad("U14", False, 'u14_players.csv')
+BC.add_squad("U18", 'u18_players.csv')
+BC.add_squad("U16", 'u16_players.csv')
+BC.add_squad("U15", 'u15_players.csv')
+BC.add_squad("U14", 'u14_players.csv')
 BC.squads[0].build_teams(None, None)
 BC.squads[1].build_teams(None, None)
 BC.squads[2].build_teams(None, None)
 BC.squads[3].build_teams(None, None)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

@@ -26,6 +26,10 @@ table td, th {
   padding: 8px 16px;
 }
 
+h2 {
+  padding-top: 10px;
+}
+
 h4.error {
   color: red;
 }
