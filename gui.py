@@ -142,6 +142,7 @@ def player(name=None):
                 BC.squads[age_group].set_player_availability(name, availability)
                 BC.squads[age_group].update_team(BC.squads[age_group].find_players_team(name))
             elif key == "remove":
+                BC.squads[age_group].remove_ratings(name, int(request.form[key]))
                 BC.squads[age_group].remove_ranking(name, int(request.form[key]))
                 BC.squads[age_group].update_team(BC.squads[age_group].find_players_team(name))
             elif key == "delete":
