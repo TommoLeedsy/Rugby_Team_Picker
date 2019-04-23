@@ -533,6 +533,7 @@ class School:
         if csv is not None:
             # It then runs the function import_players to import the players into the new squad
             self.squads[len(self.squads) - 1].import_players(csv)
+        self.check_ordinal()
 
     def delete_squad(self, age_group):
         # deletes item in self.squads where the index is equal to age_group
@@ -554,6 +555,17 @@ class School:
                 print(index)
                 return index
         return None
+
+    def check_ordinal(self):
+        # Iterates through all the squads
+        for index in range(len(self.squads)):
+            # Checks if the index is zero
+            if index == 0:
+                # Sets the value for .ordinal to True
+                self.squads[index].ordinal = True
+            else:
+                # Sets the value for .ordinal to False
+                self.squads[index].ordinal = False
 
     @property
     def name(self):
