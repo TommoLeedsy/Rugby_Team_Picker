@@ -14,7 +14,7 @@ select {
   width: 117px;
 }
 
-button#availability {
+button#availability, button#delete {
   width: 200px;
   text-align: center;
   background-color: #ddd;

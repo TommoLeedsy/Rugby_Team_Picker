@@ -1,7 +1,5 @@
 import main as backend
-import os
-from flask import Flask, request, render_template
-from werkzeug.utils import secure_filename
+from flask import Flask, redirect, url_for, render_template, request
 
 UPLOAD_FOLDER = '/uploads'
 ALLOWED_EXTENSIONS = set(['csv'])
@@ -15,12 +13,30 @@ def normalise_name(name):
     return " ".join(name)
 
 
+def standardise_name(name):
+    # imports regex
+    import re
+    # Splits the name into an array where each item is a word in the name
+    names = [x for x in re.split(" |_", str(name)) if x != '']
+    # Iterates though each item in the array
+    for index in range(len(names)):
+        # Capitalises the word in each item of the array
+        names[index] = names[index].capitalize()
+    # Returns the joined elements of the array which are separated by underscores
+    return "_".join(names)
+
+
 def index_to_team_name(age_group, team):
     if BC.squads[age_group].ordinal is True:
         team_name = str(team + 1) + "XV"
     else:
         team_name = BC.squads[age_group].age_group + chr(team + 65)
     return team_name
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/')
@@ -127,8 +143,10 @@ def player(name=None):
                 BC.squads[age_group].update_team(BC.squads[age_group].find_players_team(name))
             elif key == "remove":
                 BC.squads[age_group].remove_ranking(name, int(request.form[key]))
-                BC.squads[age_group].remove_ratings(name, int(request.form[key]))
                 BC.squads[age_group].update_team(BC.squads[age_group].find_players_team(name))
+            elif key == "delete":
+                BC.squads[age_group].remove_player(name)
+                return redirect(url_for('squad', age_group=age_group+1))
         else:
             key = list(data)[0], list(data)[1]
             position = int(request.form[key[0]])
@@ -160,11 +178,6 @@ def player(name=None):
                            text_positions=text_positions, all_positions=all_positions, error=error)
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
 @app.route('/squad/')
 @app.route('/squad/<age_group>', methods=['GET', 'POST'])
 def squad(age_group=None):
@@ -173,10 +186,7 @@ def squad(age_group=None):
     error = ""
     players = []
     if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            error = "No file has been selected, please upload a file"
-        else:
+        if 'file' in request.files:
             file = request.files['file']
             # if user does not select file, browser also
             # submit an empty part without filename
@@ -189,6 +199,15 @@ def squad(age_group=None):
                     BC.squads[age_group].upload_players(file_data)
                 else:
                     error = "This file type is not allowed"
+        elif list(request.form.to_dict())[0] == 'player':
+            try:
+                BC.squads[0].add_player(request.form['player'])
+                return redirect(url_for('player', name=standardise_name(request.form['player'])))
+            except ValueError as error:
+                pass
+        # check if the post request has the file part
+        elif 'file' not in request.files:
+            error = "No file has been selected, please upload a file"
     for player in BC.squads[age_group].players:
         team = BC.squads[age_group].find_players_team(player.name)
         if team is not None:

@@ -9,15 +9,14 @@
 </head>
 <body>
   <h1>{{ age_group }} Squad Settings</h1>
-  <h3>Upload a CSV file with all the players name for this age group</h3>
   <h4 class="error">{{ error }}</h4>
   <h4 class="success">{{ success }}</h4>
+  <h2>Upload a CSV of Players</h2>
   <table>
     <tr>
       <form method=post enctype=multipart/form-data>
           <td>
-            <input type=file name=file id="file">
-            <label for="file">Choose a file</label>
+            <input type="file" name="file"/>
           </td>
           <td class="button">
             <input type=submit value=Upload>
@@ -25,6 +24,19 @@
       </form>
     </tr>
   </table>
+  <h2>Add Players</h2>
+  <table>
+      <tr>
+        <form method="post" action="{{url_for('squad', age_group=index)}}">
+          <td>
+              <input name="player"></input>
+          </td>
+          <td class="button">
+            <input type="submit" value="Add Player">
+          </td>
+        </form>
+      </tr>
+    </table>
   <h2>{{ age_group }} Players:</h2>
   <table id="players">
     <tr>

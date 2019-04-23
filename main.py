@@ -115,10 +115,10 @@ class Squad:
         name = self.standardise_name(name)
         # Finds the players index in players
         index = self.find_player(name)
-        # Deletes the player from players
-        del self.players[index]
         # Removes all the player's rankings from the rankings
         self.remove_all_rankings(name)
+        # Deletes the player from players
+        del self.players[index]
 
     def set_player_availability(self, player, availability):
         # Takes the name and passes it to standardise_name() and this outputs a standardised name
@@ -526,6 +526,7 @@ class School:
             self.squads[index].import_players(csv)
 
     def find_player_age_group(self, name):
+
         # Iterates through all the squads
         for index in range(len(self.squads)):
             # Checks if the payer is in the squad

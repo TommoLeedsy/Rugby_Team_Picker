@@ -62,5 +62,9 @@
           </form>
         </tr>
       </table>
+      <br>
+      <form method="post" action="{{url_for('player', name=name)}}">
+          <button id="delete" type="submit" name="delete">Delete this Player</button>
+      </form>
 </body>
 </html>
