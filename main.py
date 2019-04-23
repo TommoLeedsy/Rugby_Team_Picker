@@ -443,6 +443,19 @@ class Squad:
         except FileNotFoundError:
             raise FileNotFoundError("The file entered: " + file + " does not exist")
 
+    def upload_players(self, csv_file):
+        rows = [line.split(',') for line in csv_file.decode('utf-8').replace('\r', '').split('\n')]
+        for row in rows:
+            if len(row[0]) != 0:
+                # Calls add player on the data in the first column
+                self.add_player(row[0])
+                # Checks if there are more than 1 column
+                if (len(row) - 1) % 2 == 0:
+                    # Iterates through all the rankings in the CSV
+                    for ratings in range((len(row) - 1) // 2):
+                        # Calls the add_ratings of the data from the CSV
+                        self.add_ratings(row[0], int(row[(ratings * 2) + 2]), int(row[(ratings * 2) + 1]))
+
     def find_players_team(self, name):
         # Takes the name and passes it to standardise_name() and this outputs a standardised name
         name = self.standardise_name(name)

@@ -172,17 +172,6 @@ def squad(age_group=None):
     success = ""
     error = ""
     players = []
-    for player in BC.squads[age_group].players:
-        team = BC.squads[age_group].find_players_team(player.name)
-        if team is not None:
-            if BC.squads[age_group].ordinal is True:
-                team_name = str(team + 1) + "XV"
-            else:
-                team_name = BC.squads[age_group].age_group + chr(team + 65)
-            team += 1
-        else:
-            team_name = None
-        players.append(((player.name, normalise_name(player.name)), (team, team_name)))
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -194,16 +183,23 @@ def squad(age_group=None):
             if file.filename == '':
                 error = "No file has been selected, please upload a file"
             else:
-                if allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                if file and allowed_file(file.filename):
+                    file_data = file.stream.read()
                     success = "The file has been uploaded"
-                    try:
-                        BC.squads[age_group].import_players('uploads/' + filename)
-                    except FileNotFoundError as error:
-                        pass
+                    BC.squads[age_group].upload_players(file_data)
                 else:
                     error = "This file type is not allowed"
+    for player in BC.squads[age_group].players:
+        team = BC.squads[age_group].find_players_team(player.name)
+        if team is not None:
+            if BC.squads[age_group].ordinal is True:
+                team_name = str(team + 1) + "XV"
+            else:
+                team_name = BC.squads[age_group].age_group + chr(team + 65)
+            team += 1
+        else:
+            team_name = None
+        players.append(((player.name, normalise_name(player.name)), (team, team_name)))
     index = age_group + 1
     age_group = BC.squads[age_group].age_group
     return render_template('squad.html', error=error, success=success, age_group=age_group, index=index, players=players)
