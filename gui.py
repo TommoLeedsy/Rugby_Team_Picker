@@ -295,6 +295,8 @@ def squad(age_group=None):
                     file_data = file.stream.read()
                     # Uploads the players by calling upload_players
                     BC.squads[age_group].upload_players(file_data)
+                    # Builds the teams with the new players
+                    BC.squads[age_group].build_teams(None, None)
                     success = "The file has been uploaded"
                 else:
                     error = "This file type is not allowed"
