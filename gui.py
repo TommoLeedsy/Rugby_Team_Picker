@@ -327,11 +327,11 @@ def squad(age_group=None):
         if team is not None:
             # Finds the team name by calling the function index_to_team_name()
             team_name = index_to_team_name(age_group, team)
+            # Append a tuple containing two tuple containing (player name and normalise name) and (team and team name)
+            players.append(((player.name, normalise_name(player.name)), (team + 1, team_name)))
         else:
-            # Sets the team_name to None
-            team_name = None
-        # Append a tuple containing two tuple containing (player name and normalise name) and (team and team name)
-        players.append(((player.name, normalise_name(player.name)), (team, team_name)))
+            # Append a tuple containing two tuple containing (player name and normalise name) and (None and None)
+            players.append(((player.name, normalise_name(player.name)), (None, None)))
     # Index is set to one plus the value of age_group
     index = age_group + 1
     # age_group is then set to the age group's name

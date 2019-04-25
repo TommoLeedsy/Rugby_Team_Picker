@@ -588,24 +588,35 @@ class School:
         self.squads = []
 
     def add_squad(self, age_group, csv):
-        # Goes though all the other squads the school has
-        for index in range(len(self.squads)):
-            # Checks if the current age group that is less than the one we are trying to add
-            if int(age_group[1:3]) > int(self.squads[index].age_group[1:3]):
-                # Inserts the squad into the list at the point specified by index
-                self.squads.insert(index, Squad(age_group),)
-                # Checks is csv is None
-                if csv is not None:
-                    # It then runs the function import_players to import the players into the new squad
-                    self.squads[index].import_players(csv)
-                return
-        # This age group was lower than all the others it just appends
-        self.squads.append(Squad(age_group))
-        # Checks is csv is None
-        if csv is not None:
-            # It then runs the function import_players to import the players into the new squad
-            self.squads[len(self.squads) - 1].import_players(csv)
-        self.check_ordinal()
+        import re
+        from pathlib import Path
+        csv = Path(csv)
+        if re.match(r"[U]{1}[0-9]{2}", age_group) and csv.is_file():
+            # Goes though all the other squads the school has
+            for index in range(len(self.squads)):
+                # Checks if the current age group that is less than the one we are trying to add
+                if int(age_group[1:3]) > int(self.squads[index].age_group[1:3]):
+                    # Inserts the squad into the list at the point specified by index
+                    self.squads.insert(index, Squad(age_group),)
+                    # Checks is csv is None
+                    if csv is not None:
+                        # It then runs the function import_players to import the players into the new squad
+                        self.squads[index].import_players(csv)
+                    return
+            # This age group was lower than all the others it just appends
+            self.squads.append(Squad(age_group))
+            # Checks is csv is None
+            if csv is not None:
+                # It then runs the function import_players to import the players into the new squad
+                self.squads[len(self.squads) - 1].import_players(csv)
+            self.check_ordinal()
+        else:
+            if not re.match(r"[U]{1}[0-9]{2}", age_group):
+                print("ERROR: " + str(age_group) + " does not conform to the form U then 2 digits")
+                # raise ValueError(str(age_group) + " does not conform to the form U then 2 digits")
+            if not csv.is_file():
+                print("ERROR: " + str(csv) + " does not exist")
+                # raise FileNotFoundError(str(csv) + " does not exist")
 
     def delete_squad(self, age_group):
         # deletes item in self.squads where the index is equal to age_group
