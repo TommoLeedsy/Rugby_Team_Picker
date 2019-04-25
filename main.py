@@ -590,8 +590,18 @@ class School:
     def add_squad(self, age_group, csv):
         import re
         from pathlib import Path
-        csv = Path(csv)
-        if re.match(r"[U]{1}[0-9]{2}", age_group) and csv.is_file():
+        # Checks if csv is equal to None
+        if csv is None:
+            validated = True
+        else:
+            # Sets csv to the path to that data
+            csv = Path(csv)
+            # Checks if csv is a file
+            if csv.is_file():
+                validated = True
+            else:
+                validated = False
+        if re.match(r"[U]{1}[0-9]{2}", age_group) and validated is True:
             # Goes though all the other squads the school has
             for index in range(len(self.squads)):
                 # Checks if the current age group that is less than the one we are trying to add
