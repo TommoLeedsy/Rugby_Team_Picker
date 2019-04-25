@@ -388,7 +388,6 @@ class Squad:
     def set_player(self, team, player, position):
         # Takes the name and passes it to standardise_name() and this outputs a standardised name
         player = self.standardise_name(player)
-        print(player)
         # Finds the position of the player in players array
         index = self.find_player(player)
         # Validates the inputs
@@ -478,6 +477,7 @@ class Squad:
                 if position == self.subs[team][index]:
                     # Deletes item at the point specified by index
                     del self.subs[team][index]
+                    return
 
     def clear_sub(self, team):
         # Decrements the value of team by 1

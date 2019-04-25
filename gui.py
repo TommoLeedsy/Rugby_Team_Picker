@@ -92,12 +92,14 @@ def team(age_group=None, team=None):
             if key == "remove":
                 # Calls the remove_sub function
                 BC.squads[age_group].remove_sub(team, position)
+                # Calls the build_teams function
+                BC.squads[age_group].build_teams(team, None)
             # Checks if key was add
             elif key == "add":
                 # Calls the add_sub function
                 BC.squads[age_group].add_sub(team, position)
-            # Calls the build_teams function
-            BC.squads[age_group].build_teams(team, None)
+                # Calls the build_teams function
+                BC.squads[age_group].build_teams(team, None)
         else:
             error = "No sub has been selected, please select a sub from the dropdown box below"
     # Sets the subs by iterating through the teams subs and adding 1
